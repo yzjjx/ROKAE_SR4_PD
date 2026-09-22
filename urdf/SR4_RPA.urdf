@@ -1,0 +1,293 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="xMateSR4C">
+  <!-- Modified from ROKAE controller export XMS4-R800-W4G3B2C; rigid-body dynamics updated from LINK_MASS, LINK_CENTROID, LINK_MOMENT_OF_INERTIA_LOW. --><!-- MOTOR_INERTIA, nonlinear friction, JOINT_STIFFNESS and JOINT_DAMPING are intentionally NOT merged into URDF inertial tensors. --><material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+  <material name="blue">
+    <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+  <material name="green">
+    <color rgba="0.0 0.8 0.0 1.0"/>
+  </material>
+  <material name="grey">
+    <color rgba="0.2 0.2 0.2 1.0"/>
+  </material>
+  <material name="orange">
+    <color rgba="1.0 0.423529411765 0.0392156862745 1.0"/>
+  </material>
+  <material name="brown">
+    <color rgba="0.870588235294 0.811764705882 0.764705882353 1.0"/>
+  </material>
+  <material name="red">
+    <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+  <material name="Beige">
+    <color rgba="1.0 0.784 0.5765 1.0"/>
+  </material>
+  <link name="world"/>
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="xMateSR4C_base"/>
+    <!-- base关节与world固定连接，因此不用修改质量、惯量、质心等参数，不参与动力学计算 -->
+  </joint>
+  <link name="xMateSR4C_base">
+    <visual>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <!-- 质量参数 -->
+      <mass value="3.16699999486378"/>
+      <!-- 惯性张量 -->
+      <inertia ixx=" 0.058267910813839" ixy="-3.715826953316560e-07" ixz="-1.05949175179955e-06" iyy=" 0.0576103483714700" iyz="-0.00456914016524626" izz=" 0.00607968319952077"/>
+      <!-- 质心参数 -->
+      <origin rpy="0 0 0" xyz="-0.000072769597 -0.001679187012 0.002986854502"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+    </collision>
+  </link>
+
+  <joint name="xmate_joint_1" type="revolute">
+    <parent link="xMateSR4C_base"/>
+    <child link="xMateSR4C_link1"/>
+    <limit effort="300" lower="-3.1416" upper="3.1416" velocity="10"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="xmate_joint_1">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <!-- Controller raw signed reduction ratio = 120/1; magnitude used here, joint axis retains URDF direction convention --><mechanicalReduction>120</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link name="xMateSR4C_link1">
+    <visual>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_link1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.328"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <!-- Updated from SR4C controller rigid-body identification parameters --><origin xyz="1.1e-05 -0.007992 0.235842" rpy="0 0 0"/>
+      <mass value="3.167"/>
+      <inertia ixx="0.031167987" ixy="-6.48e-07" ixz="-4.273e-06" iyy="0.03071271" iyz="-0.002236558" izz="0.005877402"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_link1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="xmate_joint_2" type="revolute">
+    <parent link="xMateSR4C_link1"/>
+    <child link="xMateSR4C_link2"/>
+    <limit effort="300" lower="-2.4222" upper="2.35619" velocity="10"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0 0.328" rpy="0 0 0"/>
+  </joint>
+  <transmission name="tran2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="xmate_joint_2">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <!-- Controller raw signed reduction ratio = -120/1; magnitude used here, joint axis retains URDF direction convention --><mechanicalReduction>120</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link name="xMateSR4C_link2">
+    <visual>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_link2.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <!-- Updated from SR4C controller rigid-body identification parameters --><origin xyz="0.016666 -0.069301 0.184671" rpy="0 0 0"/>
+      <mass value="4.291"/>
+      <inertia ixx="0.140425151" ixy="0.000390088" ixz="0.014948192" iyy="0.140401982" iyz="-0.002552767" izz="0.012647754"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_link2.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+    </collision>
+  </link>
+
+  <joint name="xmate_joint_3" type="revolute">
+    <parent link="xMateSR4C_link2"/>
+    <child link="xMateSR4C_link3"/>
+    <limit effort="300" lower="-2.96555" upper="2.35619" velocity="10"/>
+    <axis xyz="0 -1 0"/>
+    <origin xyz="0.050 0 0.4031" rpy="0 0 0"/>
+  </joint>
+  <transmission name="tran3">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="xmate_joint_3">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor3">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <!-- Controller raw signed reduction ratio = -120/1; magnitude used here, joint axis retains URDF direction convention --><mechanicalReduction>120</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link name="xMateSR4C_link3">
+    <visual>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_link3.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <!-- Updated from SR4C controller rigid-body identification parameters --><origin xyz="0.0249 0.009986 0.083739" rpy="0 0 0"/>
+      <mass value="2.018"/>
+      <inertia ixx="0.021038419" ixy="-0.000483905" ixz="0.004026647" iyy="0.021676668" iyz="-0.001704899" izz="0.004293575"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_link3.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="xmate_joint_4" type="revolute">
+    <parent link="xMateSR4C_link3"/>
+    <child link="xMateSR4C_link4"/>
+    <limit effort="300" lower="-3.1416" upper="3.1416" velocity="10"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="-0.050 0 0.4" rpy="0 0 0"/>
+  </joint>
+  <transmission name="tran4">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="xmate_joint_4">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor4">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <!-- Controller raw signed reduction ratio = 100/1; magnitude used here, joint axis retains URDF direction convention --><mechanicalReduction>100</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link name="xMateSR4C_link4">
+    <visual>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_link4.stl" scale=".001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <!-- Updated from SR4C controller rigid-body identification parameters --><origin xyz="-2.5e-05 -0.010923 -0.071267" rpy="0 0 0"/>
+      <mass value="1.882"/>
+      <inertia ixx="0.013319852" ixy="-1.85e-06" ixz="8.67e-07" iyy="0.012519892" iyz="-0.00143894" izz="0.002788281"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_link4.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+    </collision>
+  </link>
+
+  <joint name="xmate_joint_5" type="revolute">
+    <parent link="xMateSR4C_link4"/>
+    <child link="xMateSR4C_link5"/>
+    <limit effort="300" lower="-3.1416" upper="3.1416" velocity="10"/>
+    <axis xyz="0 -1 0"/>
+    <origin xyz="0 0.136 0" rpy="0 0 0"/>
+  </joint>
+  <transmission name="tran5">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="xmate_joint_5">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor5">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <!-- Controller raw signed reduction ratio = -100/1; magnitude used here, joint axis retains URDF direction convention --><mechanicalReduction>100</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link name="xMateSR4C_link5">
+    <visual>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_link5.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <!-- Updated from SR4C controller rigid-body identification parameters --><origin xyz="3e-06 0.029173 0.007019" rpy="0 0 0"/>
+      <mass value="1.507"/>
+      <inertia ixx="0.005032625" ixy="-6.075e-06" ixz="-1.293e-06" iyy="0.002614418" iyz="-0.000331648" izz="0.003944803"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_link5.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="xmate_joint_6" type="revolute">
+    <parent link="xMateSR4C_link5"/>
+    <child link="xMateSR4C_link6"/>
+    <limit effort="300" lower="-3.14" upper="3.14" velocity="10"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="0 0 0.1035" rpy="0 0 0"/>
+  </joint>
+  <transmission name="tran6">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="xmate_joint_6">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor6">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <!-- Controller raw signed reduction ratio = 100/1; magnitude used here, joint axis retains URDF direction convention --><mechanicalReduction>100</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <link name="xMateSR4C_link6">
+    <visual>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_link6.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <!-- Updated from SR4C controller rigid-body identification parameters --><origin xyz="7.3e-05 7.9e-05 -0.044853" rpy="0 0 0"/>
+      <mass value="0.634"/>
+      <inertia ixx="0.000997016" ixy="-1.376e-06" ixz="8.97e-07" iyy="0.00100253" iyz="1.581e-06" izz="0.000447948"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="../stl/xMateSR4C_link6.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+    </collision>
+  </link>
+</robot>
